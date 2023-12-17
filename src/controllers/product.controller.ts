@@ -17,16 +17,47 @@ export const createProduct = (req: Request, res: Response) => {
   })
 }
 
-export const getAllProduct = (req: Request, res: Response) => {
+export const getProduct = (req: Request, res: Response) => {
+  const products = [
+    {
+      name: 'Sepatu',
+      price: 200000
+    },
+    {
+      name: 'Baju',
+      price: 10000
+    }
+  ]
+  const {
+    params: { name }
+  } = req
+
+  if (name) {
+    const filterProduct = products.filter((product) => {
+      if (product.name === name) {
+        return product
+      }
+    })
+    if (filterProduct.length === 0) {
+      logger.info('Data Product Not Found')
+      return res.status(404).send({
+        status: false,
+        statusCode: 404,
+        data: {}
+      })
+    }
+    logger.info('Get Product Success')
+    return res.status(200).send({
+      status: true,
+      statusCode: 200,
+      data: filterProduct[0]
+    })
+  }
+
   logger.info('Get Product Success')
   return res.status(200).send({
     status: true,
     statusCode: 200,
-    data: [
-      {
-        name: 'Sepatu Baru',
-        price: 500000
-      }
-    ]
+    data: products
   })
 }

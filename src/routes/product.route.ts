@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { createProduct, getAllProduct } from '../controllers/product.controller'
+import { createProduct, getProduct } from '../controllers/product.controller'
 
 export const ProductRouter: Router = Router()
 
-ProductRouter.get('/', getAllProduct)
-
+ProductRouter.get('/', getProduct)
+ProductRouter.get('/:name', getProduct)
 ProductRouter.post('/', createProduct)

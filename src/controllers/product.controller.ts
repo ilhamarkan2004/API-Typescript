@@ -16,3 +16,17 @@ export const createProduct = (req: Request, res: Response) => {
     data: value
   })
 }
+
+export const getAllProduct = (req: Request, res: Response) => {
+  logger.info('Get Product Success')
+  return res.status(200).send({
+    status: true,
+    statusCode: 200,
+    data: [
+      {
+        name: 'Sepatu Baru',
+        price: 500000
+      }
+    ]
+  })
+}

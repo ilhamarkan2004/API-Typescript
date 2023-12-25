@@ -2,13 +2,9 @@ import { Request, Response } from 'express'
 import { logger } from '../utils/logger'
 import { createProductValidation } from '../validations/product.validation'
 import { getProductFromDB } from '../services/product.service'
+import { v4 as uuidv4 } from 'uuid'
+import ProductType from '../types/product.type'
 
-interface ProductType {
-  product_id: String
-  name: String
-  price: Number
-  size: String
-}
 
 export const createProduct = (req: Request, res: Response) => {
   const { error, value } = createProductValidation(req.body)

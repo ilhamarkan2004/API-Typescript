@@ -6,7 +6,7 @@ export const createProductValidation = (payload: ProductType) => {
     product_id: Joi.string().required(),
     name: Joi.string().required(),
     price: Joi.number().allow('', null),
-    size: Joi.number().allow('', null)
+    size: Joi.string().allow('', null)
   })
   return schema.validate(payload)
 }

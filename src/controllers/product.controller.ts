@@ -76,13 +76,18 @@ export const updateProduct = async (req: Request, res: Response) => {
   }
 
   try {
-    await updateProductById(id, value)
-    logger.info('Update Product Success')
-    return res.status(200).send({
-      status: true,
-      statusCode: 200,
-      message: 'Update product success'
-    })
+    const result = await updateProductById(id, value)
+    if (result) {
+      logger.info('Update Product Success')
+      return res.status(200).send({
+        status: true,
+        statusCode: 200,
+        message: 'Update product success'
+      })
+    } else {
+      logger.info('Data not found')
+      return res.status(404).send({ status: true, statusCode: 404, message: 'Data not found' })
+    }
   } catch (error) {
     logger.error('ERR = product - update', error)
     return res.status(422).send({ status: false, statusCode: 422, message: error })

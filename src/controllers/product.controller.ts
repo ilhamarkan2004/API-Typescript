@@ -1,7 +1,13 @@
 import { Request, Response } from 'express'
 import { logger } from '../utils/logger'
 import { createProductValidation, updateProductValidation } from '../validations/product.validation'
-import { addProductToDB, getProductById, getProductFromDB, updateProductById } from '../services/product.service'
+import {
+  addProductToDB,
+  deleteProductById,
+  getProductById,
+  getProductFromDB,
+  updateProductById
+} from '../services/product.service'
 import { v4 as uuidv4 } from 'uuid'
 
 export const createProduct = async (req: Request, res: Response) => {
@@ -78,7 +84,20 @@ export const updateProduct = async (req: Request, res: Response) => {
       message: 'Update product success'
     })
   } catch (error) {
-    logger.error('ERR = product - create', error)
+    logger.error('ERR = product - update', error)
+    return res.status(422).send({ status: false, statusCode: 422, message: error })
+  }
+}
+export const deleteProduct = async (req: Request, res: Response) => {
+  const {
+    params: { id }
+  } = req
+  try {
+    await deleteProductById(id)
+    logger.info('Success delete product')
+    return res.status(200).send({ status: true, statusCode: 200, message: 'Delete product success' })
+  } catch (error) {
+    logger.error('ERR = product - delete', error)
     return res.status(422).send({ status: false, statusCode: 422, message: error })
   }
 }

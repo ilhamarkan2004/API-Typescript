@@ -77,5 +77,8 @@ export const updateProduct = async (req: Request, res: Response) => {
       statusCode: 200,
       message: 'Update product success'
     })
-  } catch (error) {}
+  } catch (error) {
+    logger.error('ERR = product - create', error)
+    return res.status(422).send({ status: false, statusCode: 422, message: error })
+  }
 }

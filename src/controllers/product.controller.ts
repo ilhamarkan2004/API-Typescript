@@ -93,9 +93,14 @@ export const deleteProduct = async (req: Request, res: Response) => {
     params: { id }
   } = req
   try {
-    await deleteProductById(id)
-    logger.info('Success delete product')
-    return res.status(200).send({ status: true, statusCode: 200, message: 'Delete product success' })
+    const result = await deleteProductById(id)
+    if (result) {
+      logger.info('Success delete product')
+      return res.status(200).send({ status: true, statusCode: 200, message: 'Delete product success' })
+    } else {
+      logger.info('Data not found')
+      return res.status(404).send({ status: true, statusCode: 404, message: 'Data not found' })
+    }
   } catch (error) {
     logger.error('ERR = product - delete', error)
     return res.status(422).send({ status: false, statusCode: 422, message: error })

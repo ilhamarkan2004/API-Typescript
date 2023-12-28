@@ -5,6 +5,7 @@ import { logger } from '../utils/logger'
 import { checkPassword, hashing } from '../utils/hashing'
 import { createUser, findUserByEmail } from '../services/auth.service'
 import UserType from '../types/user.type'
+import { signJWT } from '../utils/jwt'
 
 export const registerUser = async (req: Request, res: Response) => {
   req.body.user_id = uuidv4()
@@ -35,6 +36,13 @@ export const createSession = async (req: Request, res: Response) => {
     if (!isValid) {
       return res.status(401).json({ status: false, statusCode: 401, message: 'Invalid email or password' })
     }
+    const accessToken = signJWT(
+      {
+        ...user
+      },
+      { expiresIn: '1d' }
+    )
+    return res.status(200).send({ status: true, statusCode: 200, message: 'Login Success', data: { accessToken } })
   } catch (error: any) {
     logger.error('ERR = auth - create session', error.message)
     return res.status(422).send({ status: false, statusCode: 422, message: error.details[0].message })

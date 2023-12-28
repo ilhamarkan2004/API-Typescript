@@ -7,6 +7,8 @@ import cors from 'cors'
 //Connect DB
 import './utils/connectDB'
 
+import deserializeToken from './middleware/deserializedToken'
+
 const app: Application = express()
 
 const port: Number = 4000
@@ -24,6 +26,7 @@ app.use((req, res, next) => {
   next()
 })
 
+app.use(deserializeToken)
 routes(app)
 
 app.listen(port, () => logger.info(`Server is listening on port ${port}`))

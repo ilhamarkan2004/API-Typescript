@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
-import { createUserValidation } from '../validations/auth.validation'
+import { createSessionValidation, createUserValidation } from '../validations/auth.validation'
 import { logger } from '../utils/logger'
 import { hashing } from '../utils/hashing'
 import { createUser } from '../services/auth.service'
@@ -22,3 +22,11 @@ export const registerUser = async (req: Request, res: Response) => {
      return res.status(422).send({ status: false, statusCode: 422, message: error })
   }
 }
+export const createSession = async (req: Request, res: Response) => {
+  const {error,value} = createSessionValidation(req.body)
+   if (error) {
+     logger.error('ERR = auth - create session', error.details[0].message)
+     return res.status(422).send({ status: false, statusCode: 422, message: error.details[0].message })
+   }
+}
+

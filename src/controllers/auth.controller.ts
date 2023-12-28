@@ -3,7 +3,8 @@ import { v4 as uuidv4 } from 'uuid'
 import { createSessionValidation, createUserValidation } from '../validations/auth.validation'
 import { logger } from '../utils/logger'
 import { hashing } from '../utils/hashing'
-import { createUser } from '../services/auth.service'
+import { createUser, findUserByEmail } from '../services/auth.service'
+import UserType from '../types/user.type'
 
 export const registerUser = async (req: Request, res: Response) => {
   req.body.user_id = uuidv4()
@@ -18,15 +19,20 @@ export const registerUser = async (req: Request, res: Response) => {
     await createUser(value)
     return res.status(201).json({ status: true, statusCode: 201, message: 'Success register user' })
   } catch (error) {
-     logger.error('ERR = auth - register', error)
-     return res.status(422).send({ status: false, statusCode: 422, message: error })
+    logger.error('ERR = auth - register', error)
+    return res.status(422).send({ status: false, statusCode: 422, message: error })
   }
 }
 export const createSession = async (req: Request, res: Response) => {
-  const {error,value} = createSessionValidation(req.body)
-   if (error) {
-     logger.error('ERR = auth - create session', error.details[0].message)
+  const { error, value } = createSessionValidation(req.body)
+  if (error) {
+    logger.error('ERR = auth - create session', error.details[0].message)
+    return res.status(422).send({ status: false, statusCode: 422, message: error.details[0].message })
+  }
+  try {
+const user: UserType = await findUserByEmail(value.email)
+  } catch (error:any) {
+     logger.error('ERR = auth - create session', error.message)
      return res.status(422).send({ status: false, statusCode: 422, message: error.details[0].message })
-   }
+  }
 }
-

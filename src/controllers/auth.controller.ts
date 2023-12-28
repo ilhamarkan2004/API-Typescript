@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 import { v4 as uuidv4 } from 'uuid'
 import { createSessionValidation, createUserValidation } from '../validations/auth.validation'
 import { logger } from '../utils/logger'
-import { hashing } from '../utils/hashing'
+import { checkPassword, hashing } from '../utils/hashing'
 import { createUser, findUserByEmail } from '../services/auth.service'
 import UserType from '../types/user.type'
 
@@ -30,9 +30,13 @@ export const createSession = async (req: Request, res: Response) => {
     return res.status(422).send({ status: false, statusCode: 422, message: error.details[0].message })
   }
   try {
-const user: UserType = await findUserByEmail(value.email)
-  } catch (error:any) {
-     logger.error('ERR = auth - create session', error.message)
-     return res.status(422).send({ status: false, statusCode: 422, message: error.details[0].message })
+    const user: any = await findUserByEmail(value.email)
+    const isValid = checkPassword(value.password, user.password)
+    if (!isValid) {
+      return res.status(401).json({ status: false, statusCode: 401, message: 'Invalid email or password' })
+    }
+  } catch (error: any) {
+    logger.error('ERR = auth - create session', error.message)
+    return res.status(422).send({ status: false, statusCode: 422, message: error.details[0].message })
   }
 }

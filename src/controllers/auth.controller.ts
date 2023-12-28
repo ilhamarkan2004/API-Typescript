@@ -42,7 +42,10 @@ export const createSession = async (req: Request, res: Response) => {
       },
       { expiresIn: '1d' }
     )
-    return res.status(200).send({ status: true, statusCode: 200, message: 'Login Success', data: { accessToken } })
+    const refreshToken = signJWT({ ...user }, { expiresIn: '1y' })
+    return res
+      .status(200)
+      .send({ status: true, statusCode: 200, message: 'Login Success', data: { accessToken, refreshToken } })
   } catch (error: any) {
     logger.error('ERR = auth - create session', error.message)
     return res.status(422).send({ status: false, statusCode: 422, message: error.message })
@@ -66,8 +69,10 @@ export const refreshSession = async (req: Request, res: Response) => {
       },
       { expiresIn: '1d' }
     )
-    return res.status(200).send({ status: true, statusCode: 200, message: 'Login Success', data: { accessToken } })
-  } catch (error:any) {
+    return res
+      .status(200)
+      .send({ status: true, statusCode: 200, message: 'Refresh Token Success', data: { accessToken } })
+  } catch (error: any) {
     logger.error('ERR = auth - refresh session', error.message)
     return res.status(422).send({ status: false, statusCode: 422, message: error.message })
   }
